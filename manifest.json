@@ -1,7 +1,9 @@
 {
+  "id": "/banisadani/", 
   "name": "Silsilah Keluarga",
-  "short_name": "Silsilah",
-  "start_url": "index.html",
+  "short_name": "Silsilah Bani Sadani",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f4f6f8",
   "theme_color": "#2c5e4f",
