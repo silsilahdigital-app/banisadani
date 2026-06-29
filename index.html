@@ -50,27 +50,32 @@
   </div>
 
   <script>
-    // 1. Daftarkan Service Worker menggunakan jalur relatif lingkungan repositori
+    // 1. Daftarkan Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(() => {
         console.log("Service Worker Terdaftar!");
       });
     }
 
-    // 2. Logika Banner Otomatis Muncul Setelah 3 Detik
+    // 2. Logika Banner Otomatis Muncul
     let deferredPrompt = null; 
     const banner = document.getElementById('banner-install-irfin');
     const btnInstall = document.getElementById('btnInstallIrfin');
     const btnClose = document.getElementById('btnCloseIrfin');
+    
+    // Bikin kunci memori unik berdasarkan URL folder saat ini
+    const lokasiFolder = window.location.pathname; 
+    const kunciMemori = 'sudahTutupBanner_' + lokasiFolder;
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
       
-      // Munculkan banner setelah 3 detik jika belum pernah ditutup pada sesi ini
+      // Munculkan banner setelah 3 detik jika belum pernah ditutup pada link ini
       setTimeout(() => {
-        if (deferredPrompt && !sessionStorage.getItem('sudahTutupBannerSilsilah')) {
-          banner.style.style.display = 'block';
+        // Mengubah sessionStorage menjadi localStorage agar ingatannya lebih permanen (tidak hilang saat tab ditutup)
+        if (deferredPrompt && !localStorage.getItem(kunciMemori)) {
+          banner.style.display = 'block'; // Memperbaiki penulisan .style.style
         }
       }, 3000);
     });
@@ -81,7 +86,7 @@
         const { outcome } = await deferredPrompt.userChoice;
         if (outcome === 'accepted') {
           banner.style.display = 'none';
-          sessionStorage.setItem('sudahTutupBannerSilsilah', 'true');
+          localStorage.setItem(kunciMemori, 'true');
         }
         deferredPrompt = null;
       }
@@ -89,7 +94,7 @@
 
     btnClose.addEventListener('click', () => {
       banner.style.display = 'none';
-      sessionStorage.setItem('sudahTutupBannerSilsilah', 'true');
+      localStorage.setItem(kunciMemori, 'true');
     });
 
     window.addEventListener('appinstalled', () => {
